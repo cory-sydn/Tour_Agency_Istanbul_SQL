@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------------------------------------------
----- tek tek satis detayi giren proc
+---- Insert single tour sale details
 GO
 DROP PROC IF EXISTS [sp_Insert Sale Detail]
 GO
@@ -15,9 +15,8 @@ BEGIN
 	VALUES(@orderID, @TourID, @tourDate)
 END
 
-
--- tek işlem içinde Tour satisi ayni satis id ile farkli TourID leri ve tarihlerinin girisi yapilir---------
---YYYYMMDD dates , DATETIME2, conver isleminde daha az secici oldugu icin tercih ettim
+-- A tourist can buy more than one tour in the same sale.
+-- YYYYMMDD
 GO
 DROP PROC IF EXISTS [sp_Insert Sale & Invoice_Main]
 GO
@@ -25,14 +24,14 @@ CREATE PROC [sp_Insert Sale & Invoice_Main]
 (
 	@TouristID AS INT,
 	--@GuideID AS INT,
-	@TourIDs AS VARCHAR(30),                      -- tek tek veya virgul ile ayrilmiş birden fazla id ve tarih
+	@TourIDs AS VARCHAR(30),              -- comma separated IDs and thier dates or singular values. Both acceptable
 	@tourDates AS NVARCHAR(255),
 	@fakeDate AS DATETIME       ---!!!! REMOVE THIS
 )
 AS
 BEGIN
 	--- REMOVE --
-	--------- Tourist diline göre Guide belirle
+	--------- choosing a guide suitable for the tourists' nationality information
 	DECLARE @touristLang NVARCHAR(20) = (SELECT Nationality FROM Tourist WHERE TouristID = @TouristID)
 
 	DECLARE @GuideID INT = 1
@@ -54,7 +53,8 @@ BEGIN
 
 
 	INSERT INTO TourSale VALUES(@TouristID, @GuideID)
-	--daha once Tour satisi olmussa => Tourist.YeniTourist = 0
+
+	--If bought a tour before => Tourist.NewTourist = 0
 	DECLARE @oldCustomer INT = (SELECT COUNT(TouristID) FROM TourSale WHERE TouristID = @TouristID)
 
 	IF @oldCustomer > 1
@@ -112,7 +112,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		-- @TourIDs eger tek id varsa @nextpos = 0
+		-- if @TourIDs is a single value @nextpos = 0
 		EXEC [sp_Insert Sale Detail] @orderID, @TourIDs, @tourDates
 
 		EXEC [sp_Create Invoice Item] @orderID, @TourIDs, @TouristID, @fakeDate
@@ -135,12 +135,12 @@ CREATE PROC [sp_Create Invoice Item]
 	@orderID AS INT,
 	@TourID AS INT,
 	@TouristID AS INT,
-	@date AS DATETIME   -- Fake Date is an input. delete this
+	@date AS DATETIME   -- Fake Date is an input. delete this on the production
 )
 AS
 BEGIN
 
-	-- Invoice tarihine göre Discount hesaplama
+	-- Invoice Discount calculation
 	DECLARE @TouristAge AS TINYINT = (SELECT DATEDIFF(YEAR, BirthDate, CONVERT(DATETIME, @date))
 									 FROM Tourist
 									 WHERE TouristID = @TouristID)
@@ -156,7 +156,7 @@ BEGIN
 		SET @discount = 0
 	END
 
-	-- Invoice numarası hesaplama
+	-- Invoice no calculation
 	DECLARE @lastOrderID AS INT = (SELECT TOP 1 SaleID FROM Invoice ORDER BY SaleID DESC)
 	DECLARE @lastBill AS NVARCHAR(14) = (SELECT TOP 1 InvoiceNo
 										 FROM Invoice
@@ -166,7 +166,7 @@ BEGIN
 	DECLARE @billNumber AS NVARCHAR(3)
 	DECLARE @billNo AS NVARCHAR(14)
 
-	-- Eger son SaleID ile @OrderID aynı ise aynı InvoiceNo ile devam et
+	-- if last SaleID and @OrderID is same, continue with same InvoiceNo
 	IF @lastOrderID = @orderID
 	BEGIN
 		SET @billNo = @lastBill
@@ -191,12 +191,12 @@ BEGIN
 	VALUES( @billNo, @orderID, @TourID, @TouristID, @TouristFullName, @date, @discount, @cost * (1 - @discount))
 END
 
--- Touristleri Yaslidan Gence sirala
+-- Tourists Ordered Old to Young
 SELECT * FROM [vw_Tourists Ordered Old to Young]
 
 
--- Random Tour satisi olustur
--- x: TouristID, y: TourID, z: turTarihleri, t: InvoiceTarihi
+-- Produce Random Tour Sale
+-- x: TouristID, y: TourID, z: tourDates, t: InvoiceDate
 GO
 DECLARE @x INT = 1, @startdate DATE = '20190701'
 WHILE (@x <= 78)

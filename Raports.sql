@@ -1,4 +1,4 @@
---1. En cok gezilen yer/yerler neresidir?
+--1. Mostly visited area/ areas ?
 SELECT TOP 1 b.AreaName, COUNT(b.AreaID) AS ZiyaretEdilmeSayilari
 FROM TourAreaDetail bd
 JOIN SaleDetail sd ON sd.TourID = bd.TourID
@@ -8,7 +8,7 @@ GROUP BY b.AreaName
 ORDER BY COUNT(b.AreaID) DESC
 
 
---2. Agustos ayinda en cok calisan Guide/Guideler kimdir/kimlerdir?
+--2. Which guide worked the most in august?
 SELECT TOP 1 dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS GuideFullName,
 		  COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) AS Sayi
 FROM Guide g
@@ -19,7 +19,7 @@ GROUP BY dbo.fn_getFullName(r.GuideName, r.GuideSurname)
 ORDER BY COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) DESC
 
 
---3. Kadin Touristlerin gezdigi yerleri, toplam ziyaret edilme sayilariyla beraber listeleyin
+--3. List areas visited by female tourists with their trip counts.
 SELECT b.AreaName,
 	   COUNT(b.AreaID) AS ZiyaretEdilmeSayilari
 FROM TourAreaDetail bd
@@ -32,7 +32,7 @@ GROUP BY b.AreaName
 ORDER BY COUNT(b.AreaID) DESC
 
 
---4. Ingiltere’den gelip de Kiz Kulesi’ni gezen Touristler kimlerdir?
+--4. Get tourists came from England and visited Kiz Kulesi
 SELECT t.TouristID,dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS TouristFullName
 FROM Tourist t
 JOIN TourSale ts ON t.TouristID = ts.TouristID
@@ -43,7 +43,7 @@ WHERE t.ComesFrom = 'English' AND b.AreaName = 'Kiz Kulesi'
 GROUP BY t.TouristID,dbo.fn_getFullName(t.TouristName, t.TouristSurname)
 
 
---5. Gezilen yerler hangi yilda kac defa gezilmistir?
+--5. List areas with their visitation count year by year.
 SELECT * FROM [vw_Trip Counts of Areas by Year]
 
 GO
@@ -59,10 +59,7 @@ JOIN Area b ON b.AreaID = td.AreaID
 GROUP BY YEAR(sd.TourDate), b.AreaName
 ORDER BY YEAR(sd.TourDate) DESC
 
-
---6. 2’den fazla tura Guidelik eden Guidelerin en cok tanittiklari yerler nelerdir?
--- Bir satis islemi icindeki 2den fazla tura Guidelik eden Guidelerin en cok tanittiklari yerler nelerdir?
-
+--6. Get most tripped areas which are toured by guides who work with tourists that bought more than two tours in the same sales transaction.
 SELECT b.AreaName, COUNT(b.AreaName) AS [Tanitma Sayisi]
 FROM Guide g
 JOIN TourSale ts ON ts.GuideID = r.GuideID
@@ -97,7 +94,7 @@ WHERE cte.RowNo > 2
 GROUP BY cte.GuideID, b.AreaName
 
 
---7. Italyan Touristler en cok nereyi gezmistir?
+--7. Get most visited area by the Italian tourists.
 SELECT TOP 1 COUNT(b.AreaID) AS GezilmeSayisi,
 	   b.AreaName
 FROM TourAreaDetail bd
@@ -110,9 +107,9 @@ GROUP BY b.AreaID,b.AreaName
 ORDER BY COUNT(b.AreaID) DESC
 
 
---8. Kapali carsi’yi gezen en yasli Tourist kimdir?
+--8. Get the oldest tourist who visited 'Kapali Carsi'
 SELECT TOP 1 DATEDIFF(YEAR, t.BirthDate, GETDATE()) AS Age,
-	   dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS FullName
+	   	dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS FullName
 FROM Tourist t
 JOIN Invoice f ON f.TouristID = t.TouristID
 JOIN TourAreaDetail bd ON bd.TourID = f.TourID
@@ -122,10 +119,10 @@ WHERE b.AreaName = 'Kapali Carsi'
 ORDER BY DATEDIFF(YEAR, t.BirthDate, GETDATE()) DESC
 
 
---9. Yunanistan’dan gelen Finlandiyali Touristin gezdigi yerler nerelerdir?
+--9. Get areas visited by Finnish tourist who came from Greece.
 SELECT dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS FullName,
-	   b.AreaName,
-	   COUNT(b.AreaID) AS [Ziyaret Sayilari]
+			b.AreaName,
+			COUNT(b.AreaID) AS [Ziyaret Sayilari]
 FROM Tourist t
 JOIN Invoice f ON t.TouristID = f.TouristID
 JOIN TourAreaDetail td ON f.TourID = td.TourID
@@ -135,7 +132,7 @@ GROUP BY b.AreaName, dbo.fn_getFullName(t.TouristName, t.TouristSurname)
 ORDER BY [Ziyaret Sayilari] DESC
 
 
---10. Dolmabahce Sarayi’na en son giden Touristler ve Guidei listeleyin.
+--10. List tourists and guides who are visited the 'Dolmabahce Sarayi' lately.
 SELECT * FROM [vw_Dolmabahce Sarayi'na Son Gidenler]
 
 GO
@@ -145,8 +142,8 @@ CREATE VIEW [vw_Dolmabahce Sarayi'na Son Gidenler]
 AS
 WITH [cte_Dolmabahce Sarayi] AS (
 	SELECT sd.TourDate,
-		   dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS Tourist,
-		   dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS Guide
+				dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS Tourist,
+				dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS Guide
 	FROM TourAreaDetail bd
 	JOIN SaleDetail sd ON sd.TourID = bd.TourID
 	JOIN TourSale ts ON ts.SaleID = sd.SaleID
@@ -161,11 +158,11 @@ ORDER BY cte.TourDate DESC
 
 
 
--- TourCompany toplam geliri
+-- Company Total Revanue
 SELECT SUM(TotalPrice)
 FROM Invoice
 
--- TourCompany yillara göre toplam geliri
+-- Company Total Revanue year by year
 SELECT YEAR(InvoiceDate) AS Yil,
 	   SUM(TotalPrice) AS Gelir
 FROM Invoice

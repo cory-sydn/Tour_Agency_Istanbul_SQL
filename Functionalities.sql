@@ -25,7 +25,7 @@ JOIN GuideLanguage yd ON yd.GuideID = r.GuideID
 WHERE yd.LanguageName = 'Japanese'
 
 
----*-*-*     Bolge      *-*-*-------------------------------------------------------------------
+---*-*-*     Area      *-*-*-------------------------------------------------------------------
 -- Insert Area Prices with their names.
 INSERT INTO Area(AreaName, AreaPrice)
 VALUES('Ayasofya', '40')
@@ -74,13 +74,13 @@ EXEC [sp_Insert Tourist] 'Levi', 'Acevedo', 'kadin', '06.11.91', 'Japanese', 'It
 ---*-*-*        Invoice        *-*-*---
 -- Tour satisi : -> TouristID, GuideID
 -- inputlar: TouristID, GuideID, TourID veya IDleri     (Insert TourIDs with Their Dates)
--- output: Inser Sales Details and Produce Invoice Item For Each Tour Sale
+-- output: Insert sales details and produce invoice item for each tour sale
 EXEC [sp_Insert Sale & Invoice_Main] 17, 4, '6,1', '20230126,20230130'
 
 EXEC [sp_Sell Tour with Name Surname] 'Geoffrey', 'Knowles', 3, '9,5', '20230126,20230130'
 
 ----------------------------------------------------------------------------------------------------------------
--- View table to assist salesperson choosing a guide suitable for the Tourists' Nationality information
+-- View table to assist salesperson choosing a guide suitable for the tourists' nationality information
 SELECT * FROM [vw_Guide Languages Single Row]
 
 

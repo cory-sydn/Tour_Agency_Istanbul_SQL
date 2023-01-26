@@ -1,4 +1,4 @@
-﻿---- Guide ekle
+﻿----Add Guide
 GO
 CREATE PROC sp_GuideEkle
 (
@@ -14,8 +14,8 @@ BEGIN
 
 END
 GO
--- Guide yabanci dili ekle
--- GuideID ve LanguageName composite primary key olduklari icin ayni Guidee ayni dili iki defa tanimlamaya izin vermez
+-- Add Guide Languages
+-- GuideID ve LanguageName composite primary key
 GO
 CREATE PROC [sp_Insert Guide Language]
 (
@@ -46,9 +46,9 @@ BEGIN
     RETURN @name + ' ' + @surname
 END
 GO
--- GuideID ile tam adını getir
+---------------------------------------
 GO
-CREATE PROC sp_GuideIDIleTamAdıGetir
+CREATE PROC sp_getGuideFullNameFromID
 (
 	@GuideID AS INT
 )
@@ -59,7 +59,7 @@ BEGIN
 	WHERE GuideID = @GuideID
 END
 
--- Guideleri diller ile birlike getirend view
+-- Guide languages with guides (not organized)
 GO
 DROP VIEW IF EXISTS [vw_Guides & Languages]
 GO
@@ -70,6 +70,7 @@ SELECT dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS GuideFullName,
 FROM Guide g
 JOIN GuideLanguage y ON y.GuideID = r.GuideID
 
+-- Guide languages with guides organized
 GO
 DROP VIEW [vw_Guide Languages Single Row]
 GO
@@ -342,7 +343,7 @@ CREATE PROC [sp_Insert Sale & Invoice_Main]
 (
 	@TouristID AS INT,
 	@GuideID AS INT,
-	@TourIDs AS VARCHAR(30),                -- tek tek veya virgul ile ayrilmiş birden fazla id ve tarih
+	@TourIDs AS VARCHAR(30),               -- comma separated IDs and thier dates or singular values. Both acceptable
 	@tourDates AS NVARCHAR(255)
 )
 AS
@@ -492,7 +493,7 @@ CREATE PROC [sp_Sell Tour with Name Surname]
 	@name AS NVARCHAR(20),
 	@surname AS NVARCHAR(40),
 	@GuideID AS INT,
-	@TourIDs AS VARCHAR(30),      -- Comma separated tourIds and thier dates
+	@TourIDs AS VARCHAR(30),      -- comma separated IDs and thier dates or singular values. Both acceptable
 	@tourDates AS NVARCHAR(255)
 )
 AS
