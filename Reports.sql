@@ -1,5 +1,5 @@
 --1. Mostly visited area/ areas ?
-SELECT TOP 1 b.AreaName, COUNT(b.AreaID) AS ZiyaretEdilmeSayilari
+SELECT TOP 1 b.AreaName, COUNT(b.AreaID) AS [Visit Count]
 FROM TourAreaDetail bd
 JOIN SaleDetail sd ON sd.TourID = bd.TourID
 JOIN TourSale ts ON ts.SaleID = sd.SaleID
@@ -10,7 +10,7 @@ ORDER BY COUNT(b.AreaID) DESC
 
 --2. Which guide worked the most in august?
 SELECT TOP 1 dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS GuideFullName,
-		  COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) AS Sayi
+		  COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) AS Count
 FROM Guide g
 JOIN TourSale ts ON r.GuideID = ts.GuideID
 JOIN SaleDetail sd ON ts.SaleID = sd.SaleID
@@ -21,7 +21,7 @@ ORDER BY COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) DESC
 
 --3. List areas visited by female tourists with their trip counts.
 SELECT b.AreaName,
-	   COUNT(b.AreaID) AS ZiyaretEdilmeSayilari
+	   COUNT(b.AreaID) AS [Visit Count]
 FROM TourAreaDetail bd
 JOIN SaleDetail td ON td.TourID = bd.TourID
 JOIN TourSale ts ON ts.SaleID = td.SaleID
@@ -51,7 +51,7 @@ DROP VIEW IF EXISTS [vw_Trip Counts of Areas by Year]
 GO
 CREATE VIEW [vw_Trip Counts of Areas by Year]
 AS
-SELECT TOP 100 YEAR(sd.TourDate) AS Yil, b.AreaName, COUNT(b.AreaName) AS [Gezilme Sayilari]
+SELECT TOP 100 YEAR(sd.TourDate) AS Yil, b.AreaName, COUNT(b.AreaName) AS [Visit Count]
 FROM TourSale ts
 JOIN SaleDetail sd ON sd.SaleID = ts.SaleID
 JOIN TourAreaDetail td ON sd.TourID = td.TourID
@@ -60,24 +60,24 @@ GROUP BY YEAR(sd.TourDate), b.AreaName
 ORDER BY YEAR(sd.TourDate) DESC
 
 --6. Get most tripped areas which are toured by guides who work with tourists that bought more than two tours in the same sales transaction.
-SELECT b.AreaName, COUNT(b.AreaName) AS [Tanitma Sayisi]
+SELECT b.AreaName, COUNT(b.AreaName) AS [Visit Count]
 FROM Guide g
 JOIN TourSale ts ON ts.GuideID = r.GuideID
 JOIN SaleDetail sd ON sd.SaleID = ts.SaleID
 JOIN TourAreaDetail bd ON bd.TourID = sd.TourID
 JOIN Area b ON b.AreaID = bd.AreaID
 WHERE r.GuideID IN (SELECT GuideID
-					 FROM [vw_Ikiden fazla tura bakan Guideler]
+					 FROM [vw_Guide to more than two]
 					 GROUP BY GuideID)
 GROUP BY b.AreaName
 ORDER BY COUNT(b.AreaName) DESC
 
 
 GO
-DROP VIEW IF EXISTS [vw_Ikiden fazla tura bakan Guideler]
+DROP VIEW IF EXISTS [vw_Guide to more than two]
 GO
-CREATE VIEW [vw_Ikiden fazla tura bakan Guideler] AS
-WITH [cte_GuideTourSaleDIle]
+CREATE VIEW [vw_Guide to more than two] AS
+WITH [cte_GuideID & Tour]
 AS (
 	SELECT r.GuideID, ROW_NUMBER() OVER(PARTITION BY sd.SaleID ORDER BY sd.SaleID) AS RowNo
 	FROM Guide g
@@ -85,7 +85,7 @@ AS (
 	JOIN SaleDetail sd ON sd.SaleID = ts.SaleID
 )
 SELECT cte.GuideID, b.AreaName
-FROM [cte_GuideTourSaleDIle] cte
+FROM [cte_GuideID & Tour] cte
 JOIN TourSale ts ON ts.GuideID = cte.GuideID
 JOIN SaleDetail sd ON sd.SaleID = ts.SaleID
 JOIN TourAreaDetail bd ON bd.TourID = ts.TouristID
@@ -95,7 +95,7 @@ GROUP BY cte.GuideID, b.AreaName
 
 
 --7. Get most visited area by the Italian tourists.
-SELECT TOP 1 COUNT(b.AreaID) AS GezilmeSayisi,
+SELECT TOP 1 COUNT(b.AreaID) AS [Visit Count],
 	   b.AreaName
 FROM TourAreaDetail bd
 JOIN SaleDetail td ON td.TourID = bd.TourID
@@ -122,23 +122,23 @@ ORDER BY DATEDIFF(YEAR, t.BirthDate, GETDATE()) DESC
 --9. Get areas visited by Finnish tourist who came from Greece.
 SELECT dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS FullName,
 			b.AreaName,
-			COUNT(b.AreaID) AS [Ziyaret Sayilari]
+			COUNT(b.AreaID) AS [Visit Count]
 FROM Tourist t
 JOIN Invoice f ON t.TouristID = f.TouristID
 JOIN TourAreaDetail td ON f.TourID = td.TourID
 JOIN Area b ON b.AreaID = td.AreaID
 WHERE t.ComesFrom = 'Greek' AND t.Nationality = 'Finnish'
 GROUP BY b.AreaName, dbo.fn_getFullName(t.TouristName, t.TouristSurname)
-ORDER BY [Ziyaret Sayilari] DESC
+ORDER BY [Visit Count] DESC
 
 
 --10. List tourists and guides who are visited the 'Dolmabahce Sarayi' lately.
-SELECT * FROM [vw_Dolmabahce Sarayi'na Son Gidenler]
+SELECT * FROM [vw_Lately Visit Dolmabahce Sarayi]
 
 GO
-DROP VIEW IF EXISTS [vw_Dolmabahce Sarayi'na Son Gidenler]
+DROP VIEW IF EXISTS [vw_Lately Visit Dolmabahce Sarayi]
 GO
-CREATE VIEW [vw_Dolmabahce Sarayi'na Son Gidenler]
+CREATE VIEW [vw_Lately Visit Dolmabahce Sarayi]
 AS
 WITH [cte_Dolmabahce Sarayi] AS (
 	SELECT sd.TourDate,
