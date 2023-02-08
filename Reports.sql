@@ -9,14 +9,14 @@ ORDER BY COUNT(b.AreaID) DESC
 
 
 --2. Which guide worked the most in august?
-SELECT TOP 1 dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS GuideFullName,
-		  COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) AS Count
+SELECT TOP 1 dbo.fn_getFullName(g.GuideName, g.GuideSurname) AS GuideFullName,
+		  COUNT(dbo.fn_getFullName(g.GuideName, g.GuideSurname)) AS Count
 FROM Guide g
-JOIN TourSale ts ON r.GuideID = ts.GuideID
+JOIN TourSale ts ON g.GuideID = ts.GuideID
 JOIN SaleDetail sd ON ts.SaleID = sd.SaleID
 WHERE MONTH(sd.TourDate) = 8
-GROUP BY dbo.fn_getFullName(r.GuideName, r.GuideSurname)
-ORDER BY COUNT(dbo.fn_getFullName(r.GuideName, r.GuideSurname)) DESC
+GROUP BY dbo.fn_getFullName(g.GuideName, g.GuideSurname)
+ORDER BY COUNT(dbo.fn_getFullName(g.GuideName, g.GuideSurname)) DESC
 
 
 --3. List areas visited by female tourists with their trip counts.
@@ -27,7 +27,7 @@ JOIN SaleDetail td ON td.TourID = bd.TourID
 JOIN TourSale ts ON ts.SaleID = td.SaleID
 JOIN Area b ON b.AreaID = bd.AreaID
 JOIN Tourist t ON ts.TouristID = t.TouristID
-WHERE t.Gender = 'kadin'
+WHERE t.Gender = 'female'
 GROUP BY b.AreaName
 ORDER BY COUNT(b.AreaID) DESC
 
@@ -62,11 +62,11 @@ ORDER BY YEAR(sd.TourDate) DESC
 --6. Get most tripped areas which are toured by guides who work with tourists that bought more than two tours in the same sales transaction.
 SELECT b.AreaName, COUNT(b.AreaName) AS [Visit Count]
 FROM Guide g
-JOIN TourSale ts ON ts.GuideID = r.GuideID
+JOIN TourSale ts ON ts.GuideID = g.GuideID
 JOIN SaleDetail sd ON sd.SaleID = ts.SaleID
 JOIN TourAreaDetail bd ON bd.TourID = sd.TourID
 JOIN Area b ON b.AreaID = bd.AreaID
-WHERE r.GuideID IN (SELECT GuideID
+WHERE g.GuideID IN (SELECT GuideID
 					 FROM [vw_Guide to more than two]
 					 GROUP BY GuideID)
 GROUP BY b.AreaName
@@ -79,9 +79,9 @@ GO
 CREATE VIEW [vw_Guide to more than two] AS
 WITH [cte_GuideID & Tour]
 AS (
-	SELECT r.GuideID, ROW_NUMBER() OVER(PARTITION BY sd.SaleID ORDER BY sd.SaleID) AS RowNo
+	SELECT g.GuideID, ROW_NUMBER() OVER(PARTITION BY sd.SaleID ORDER BY sd.SaleID) AS RowNo
 	FROM Guide g
-	JOIN TourSale ts ON ts.GuideID = r.GuideID
+	JOIN TourSale ts ON ts.GuideID = g.GuideID
 	JOIN SaleDetail sd ON sd.SaleID = ts.SaleID
 )
 SELECT cte.GuideID, b.AreaName
@@ -94,7 +94,7 @@ WHERE cte.RowNo > 2
 GROUP BY cte.GuideID, b.AreaName
 
 
---7. Get most visited area by the Italian tourists.
+--7. Get most visited area by Italian tourists.
 SELECT TOP 1 COUNT(b.AreaID) AS [Visit Count],
 	   b.AreaName
 FROM TourAreaDetail bd
@@ -143,12 +143,12 @@ AS
 WITH [cte_Dolmabahce Sarayi] AS (
 	SELECT sd.TourDate,
 				dbo.fn_getFullName(t.TouristName, t.TouristSurname) AS Tourist,
-				dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS Guide
+				dbo.fn_getFullName(g.GuideName, g.GuideSurname) AS Guide
 	FROM TourAreaDetail bd
 	JOIN SaleDetail sd ON sd.TourID = bd.TourID
 	JOIN TourSale ts ON ts.SaleID = sd.SaleID
 	JOIN Area b ON b.AreaID = bd.AreaID
-	JOIN Guide g ON r.GuideID = ts.GuideID
+	JOIN Guide g ON g.GuideID = ts.GuideID
 	JOIN Tourist t ON t.TouristID = ts.TouristID
 	WHERE AreaName = 'Dolmabahce Sarayi'
 )

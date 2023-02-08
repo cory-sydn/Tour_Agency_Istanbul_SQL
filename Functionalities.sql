@@ -1,7 +1,6 @@
 
 ---*-*-*        Guide        *-*-*---
-INSERT INTO Guide(GuideName, GuideSurname, Gender, Phone)
-VALUES('Ozan', 'Temiz', 'erkek', '7773204562')
+EXEC sp_InsertGuide 'Ozan', 'Temiz', 'male', '7773204562'
 
 GO
 EXEC [sp_Insert Guide Language] 'Ozan', 'Temiz', 'Dutch'
@@ -15,7 +14,7 @@ WHERE GuideName = 'Bahar'
 -- Delete Guide
 DELETE FROM Guide WHERE GuideName = 'Linda'
 
--- Guide Languages organized list
+-- View table to assist salesperson choosing a guide suitable for the tourists' nationality information
 SELECT * FROM [vw_Guide Languages Single Row]
 
 -- Guides who knows Japanese
@@ -24,6 +23,7 @@ FROM Guide g
 JOIN GuideLanguage yd ON yd.GuideID = r.GuideID
 WHERE yd.LanguageName = 'Japanese'
 
+EXEC sp_getGuideFullNameFromID 2
 
 ---*-*-*     Area      *-*-*-------------------------------------------------------------------
 -- Insert Area Prices with their names.
@@ -64,23 +64,23 @@ EXEC [sp_Get Tour Areas]
 
 
 ---*-*-*        Tourist         *-*-*---
-INSERT INTO Tourist(TouristName, TouristSurname, Gender, BirthDate, Nationality, ComesFrom, NewTourist)
-VALUES ('Levi', 'Acevedo', 'Kadin', '06.11.91', 'Japanese', 'Italy', 1),
-
 GO
 EXEC [sp_Insert Tourist] 'Levi', 'Acevedo', 'kadin', '06.11.91', 'Japanese', 'Italy'
 
+--[sp_Registered Tourist Detection] trigger prevents double data entry for same tourist.
+
+-- Order tourist by age, old to youg 
+SELECT * FROM [vw_Tourists Ordered Old to Young]
 
 ---*-*-*        Invoice        *-*-*---
 -- Tour satisi : -> TouristID, GuideID
--- inputlar: TouristID, GuideID, TourID veya IDleri     (Insert TourIDs with Their Dates)
--- output: Insert sales details and produce invoice item for each tour sale
+-- Inputs: TouristID, GuideID, TourID veya IDleri     (Insert TourIDs with Their Dates)
+-- Output: Insert sales details and produce invoice item for each tour sale
 EXEC [sp_Insert Sale & Invoice_Main] 17, 4, '6,1', '20230126,20230130'
 
 EXEC [sp_Sell Tour with Name Surname] 'Geoffrey', 'Knowles', 3, '9,5', '20230126,20230130'
 
 ----------------------------------------------------------------------------------------------------------------
--- View table to assist salesperson choosing a guide suitable for the tourists' nationality information
-SELECT * FROM [vw_Guide Languages Single Row]
+
 
 
