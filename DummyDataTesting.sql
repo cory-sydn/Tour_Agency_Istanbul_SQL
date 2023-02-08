@@ -1,20 +1,4 @@
 ﻿----------------------------------------------------------------------------------------------------------
----- Insert single tour sale details
-GO
-DROP PROC IF EXISTS [sp_Insert Sale Detail]
-GO
-CREATE PROC [sp_Insert Sale Detail]
-(
-	@orderID AS INT,
-	@TourID AS INT,
-	@tourDate AS DATETIME
-)
-AS
-BEGIN
-	INSERT INTO SaleDetail(SaleID, TourID, TourDate)
-	VALUES(@orderID, @TourID, @tourDate)
-END
-
 -- A tourist can buy more than one tour in the same sale.
 -- YYYYMMDD
 GO
@@ -63,7 +47,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		PRINT 'Ilk defa Tour alisi'
+		PRINT 'First Time Tour Purchase'
 	END
 
 	DECLARE @orderID AS INT = SCOPE_IDENTITY()
@@ -119,12 +103,7 @@ BEGIN
 	END
 END
 
--------
-SELECT * FROM [vw_Guide Languages Single Row]
-
-exec [sp_Insert Sale & Invoice_Main] 48, 4, '2, 7, 5', '20191119, 20191125, 20191130', '20191118'
-exec [sp_Insert Sale & Invoice_Main] 21, 4, '2, 7, 5', '20191119, 20191125, 20191130', '20211214'
-exec [sp_Insert Sale & Invoice_Main] 22, 4, '8, 9, 11', '20191221,20191225,20191230', '20211215'
+--exec [sp_Insert Sale & Invoice_Main] 48, 4, '2, 7, 5', '20191119, 20191125, 20191130', '20191118'
 
 -------------------------- Invoice ---------------------------------------------------------------
 GO
@@ -195,31 +174,31 @@ END
 SELECT * FROM [vw_Tourists Ordered Old to Young]
 
 
--- Produce Random Tour Sale
+-- Produce Random Tour Sale Data For Testing
 -- x: TouristID, y: TourID, z: tourDates, t: InvoiceDate
-GO
-DECLARE @x INT = 1, @startdate DATE = '20190701'
-WHILE (@x <= 78)
-BEGIN
-	DECLARE @y INT = FLOOR(RAND() * 13) + 1,
-	   	    @z VARCHAR(100) = '',
-            @t VARCHAR(20) = '',
-            @date DATE = @startdate,
-            @count INT = FLOOR(RAND() * 3) + 1
+-- GO
+-- DECLARE @x INT = 1, @startdate DATE = '20190701'
+-- WHILE (@x <= 78)
+-- BEGIN
+-- 	DECLARE @y INT = FLOOR(RAND() * 13) + 1,
+-- 	   	    @z VARCHAR(100) = '',
+--             @t VARCHAR(20) = '',
+--             @date DATE = @startdate,
+--             @count INT = FLOOR(RAND() * 3) + 1
 
-	WHILE (@count > 0)
-	BEGIN
-	SET @z = @z + CONVERT(VARCHAR(8), @date, 112) + ','
-	SET @date = DATEADD(day, FLOOR(RAND() * 5) + 1, @date)
-	SET @count = @count - 1
-	END
+-- 	WHILE (@count > 0)
+-- 	BEGIN
+-- 	SET @z = @z + CONVERT(VARCHAR(8), @date, 112) + ','
+-- 	SET @date = DATEADD(day, FLOOR(RAND() * 5) + 1, @date)
+-- 	SET @count = @count - 1
+-- 	END
 
-	SET @z = LEFT(@z, LEN(@z) - 1)
-	SET @t = CONVERT(VARCHAR(8), @startdate, 112)
-	PRINT 'EXEC [sp_Insert Sale & Invoice_Main]' + CAST(@x AS VARCHAR) + ', ' + CAST(@y AS VARCHAR) + ', ''' + @z + ''', ''' + @t + ''''
+-- 	SET @z = LEFT(@z, LEN(@z) - 1)
+-- 	SET @t = CONVERT(VARCHAR(8), @startdate, 112)
+-- 	PRINT 'EXEC [sp_Insert Sale & Invoice_Main]' + CAST(@x AS VARCHAR) + ', ' + CAST(@y AS VARCHAR) + ', ''' + @z + ''', ''' + @t + ''''
 
-	SET @startdate = DATEADD(day, 10, @date)
-	SET @x = @x + 1
-END
+-- 	SET @startdate = DATEADD(day, 10, @date)
+-- 	SET @x = @x + 1
+-- END
 
 

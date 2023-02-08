@@ -1,45 +1,29 @@
 ﻿-- Insert Commands
 -- Guide
-INSERT INTO Guide(GuideName, GuideSurname, Gender, Phone)
-VALUES('Ozan', 'Temiz', 'erkek', '7773204562'),
-		('Bahar', 'Sevgin', 'kadin', '7773204563'),
-		('Omer', 'Ucar', 'erkek', '7773204564'),
-		('Sevgi', 'Cakmak', 'kadin', '7773204565'),
-		('Linda', 'Callahan', 'kadin', '7773204566')
+EXEC sp_InsertGuide 'Ozan', 'Temiz', 'male', '7773204562'
+EXEC sp_InsertGuide 'Bahar', 'Sevgin', 'female', '7773204563'
+EXEC sp_InsertGuide'Omer', 'Ucar', 'male', '7773204564'
+EXEC sp_InsertGuide 'Sevgi', 'Cakmak', 'female', '7773204565'
+EXEC sp_InsertGuide'Linda', 'Callahan', 'female', '7773204566'
 
-GO
 EXEC [sp_Insert Guide Language] 'Ozan', 'Temiz', 'Dutch'
-GO
 EXEC [sp_Insert Guide Language] 'Ozan', 'Temiz', 'Finnish'
-GO
 EXEC [sp_Insert Guide Language] 'Ozan', 'Temiz', 'Italian'
 
-GO
 EXEC [sp_Insert Guide Language] 'Bahar', 'Sevgin', 'Dutch'
-GO
 EXEC [sp_Insert Guide Language] 'Bahar', 'Sevgin', 'Greek'
-GO
 EXEC [sp_Insert Guide Language] 'Bahar', 'Sevgin', 'English'
 
-GO
 EXEC [sp_Insert Guide Language] 'Omer', 'Ucar', 'Greek'
-GO
 EXEC [sp_Insert Guide Language] 'Omer', 'Ucar', 'Ukranian'
-GO
 EXEC [sp_Insert Guide Language] 'Omer', 'Ucar', 'English'
 
-GO
 EXEC [sp_Insert Guide Language] 'Sevgi', 'Cakmak', 'Japanese'
-GO
 EXEC [sp_Insert Guide Language] 'Sevgi', 'Cakmak', 'English'
-GO
 EXEC [sp_Insert Guide Language] 'Sevgi', 'Cakmak', 'Italian'
-GO
 
 EXEC [sp_Insert Guide Language]  'Linda', 'Callahan', 'Dutch'
-GO
 EXEC [sp_Insert Guide Language]  'Linda', 'Callahan', 'English'
-GO
 EXEC [sp_Insert Guide Language]  'Linda', 'Callahan', 'Japanese'
 
 
@@ -98,171 +82,171 @@ EXEC [sp_Name Tour & Enter Area] 'Miniaturk ve Kiz Kulesi', 'Miniaturk', 'Kiz Ku
 --=================================================================================================================
 -- Tourist
 GO
-EXEC [sp_Insert Tourist] 'Levi', 'Acevedo', 'kadin', '06.11.91', 'Japanese', 'Italy'
+EXEC [sp_Insert Tourist] 'Levi', 'Acevedo', 'female', '06.11.91', 'Japanese', 'Italy'
 GO
-EXEC [sp_Insert Tourist] 'Basil', 'Aguilar','erkek', '04.22.94', 'Greek', 'Greek'
+EXEC [sp_Insert Tourist] 'Basil', 'Aguilar','male', '04.22.94', 'Greek', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Basil', 'Aguilar','erkek', '04.22.94', 'Greek', 'Greek'
+EXEC [sp_Insert Tourist] 'Basil', 'Aguilar','male', '04.22.94', 'Greek', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Zenaida', 'Holder',	'erkek', '01.09.90','Finnish','Greek'
+EXEC [sp_Insert Tourist] 'Zenaida', 'Holder',	'male', '01.09.90','Finnish','Greek'
 GO
-EXEC [sp_Insert Tourist] 'Illana', 'Browning','kadin', '01.28.91','Greek','English'
+EXEC [sp_Insert Tourist] 'Illana', 'Browning','female', '01.28.91','Greek','English'
 GO
-EXEC [sp_Insert Tourist] 'Raja', 'Duke', 'erkek', '07.27.83', 'Dutch', 'Dutch'
+EXEC [sp_Insert Tourist] 'Raja', 'Duke', 'male', '07.27.83', 'Dutch', 'Dutch'
 GO
-EXEC [sp_Insert Tourist] 'Isaiah', 'Valdez', 'erkek', '01.16.98','Finnish', 'Finnish'
+EXEC [sp_Insert Tourist] 'Isaiah', 'Valdez', 'male', '01.16.98','Finnish', 'Finnish'
 GO
-EXEC [sp_Insert Tourist] 'Gray', 'Marshall', 'kadin', '11.21.80', 'Japanese','Japanese'
+EXEC [sp_Insert Tourist] 'Gray', 'Marshall', 'female', '11.21.80', 'Japanese','Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Ora', 'Fletcher', 'kadin', '01.19.94', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Ora', 'Fletcher', 'female', '01.19.94', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Lavinia', 'Lloyd', 'kadin', '10.26.86', 'English',	'English'
+EXEC [sp_Insert Tourist] 'Lavinia', 'Lloyd', 'female', '10.26.86', 'English',	'English'
 GO
-EXEC [sp_Insert Tourist] 'Jenna', 'Williams', 'kadin', '05.01.82', 'Greek', 'Greek'
+EXEC [sp_Insert Tourist] 'Jenna', 'Williams', 'female', '05.01.82', 'Greek', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Christian', 'Nash', 'erkek', '08.09.80', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Christian', 'Nash', 'male', '08.09.80', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Quinn', 'Hamilton', 'erkek', '07.10.90', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Quinn', 'Hamilton', 'male', '07.10.90', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Geoffrey', 'Knowles', 'erkek', '02.17.85', 'Ukrainian', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Geoffrey', 'Knowles', 'male', '02.17.85', 'Ukrainian', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Brianna', 'Everett', 'erkek', '09.03.78', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Brianna', 'Everett', 'male', '09.03.78', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Sofia', 'Kostas', 'kadin', '05.20.85', 'Greek', 'Greek'
+EXEC [sp_Insert Tourist] 'Sofia', 'Kostas', 'female', '05.20.85', 'Greek', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Michael', 'Brown', 'erkek', '12.15.80', 'Dutch', 'Dutch'
+EXEC [sp_Insert Tourist] 'Michael', 'Brown', 'male', '12.15.80', 'Dutch', 'Dutch'
 GO
-EXEC [sp_Insert Tourist] 'Nina', 'Koskinen', 'kadin', '09.22.83', 'Finnish', 'Finnish'
+EXEC [sp_Insert Tourist] 'Nina', 'Koskinen', 'female', '09.22.83', 'Finnish', 'Finnish'
 GO
-EXEC [sp_Insert Tourist] 'Yukio', 'Sato', 'erkek', '07.01.82', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Yukio', 'Sato', 'male', '07.01.82', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Anna', 'Ivanova', 'kadin', '11.05.87', 'Ukrainian', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Anna', 'Ivanova', 'female', '11.05.87', 'Ukrainian', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Mark', 'Johnson', 'erkek', '02.14.84', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Mark', 'Johnson', 'male', '02.14.84', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Mia', 'Henderson', 'kadin', '06.12.81', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Mia', 'Henderson', 'female', '06.12.81', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Lucas', 'Garcia', 'erkek', '03.28.79', 'Dutch', 'Japanese'
+EXEC [sp_Insert Tourist] 'Lucas', 'Garcia', 'male', '03.28.79', 'Dutch', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Emma', 'Williams', 'kadin', '04.05.90', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Emma', 'Williams', 'female', '04.05.90', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Noah', 'Jones', 'erkek', '07.08.85', 'Dutch', 'Dutch'
+EXEC [sp_Insert Tourist] 'Noah', 'Jones', 'male', '07.08.85', 'Dutch', 'Dutch'
 GO
-EXEC [sp_Insert Tourist] 'Olivia', 'Brown', 'kadin', '09.20.83', 'Finnish', 'Finnish'
+EXEC [sp_Insert Tourist] 'Olivia', 'Brown', 'female', '09.20.83', 'Finnish', 'Finnish'
 GO
-EXEC [sp_Insert Tourist] 'Liam', 'Miller', 'erkek', '06.12.82', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Liam', 'Miller', 'male', '06.12.82', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Ava', 'Davis', 'kadin', '02.01.87', 'Greek', 'Greek'
+EXEC [sp_Insert Tourist] 'Ava', 'Davis', 'female', '02.01.87', 'Greek', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Jacob', 'Garcia', 'erkek', '01.15.80', 'Ukrainian', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Jacob', 'Garcia', 'male', '01.15.80', 'Ukrainian', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Isabella', 'Rodriguez', 'kadin', '05.10.84', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Isabella', 'Rodriguez', 'female', '05.10.84', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Ethan', 'Taylor', 'erkek', '11.01.81', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Ethan', 'Taylor', 'male', '11.01.81', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Mia', 'Henderson', 'kadin', '06.12.81', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Mia', 'Henderson', 'female', '06.12.81', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Lucas', 'Garcia', 'erkek', '03.28.79', 'Dutch', 'Japanese'
+EXEC [sp_Insert Tourist] 'Lucas', 'Garcia', 'male', '03.28.79', 'Dutch', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Aisha', 'Wang', 'kadin', '03.28.69', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Aisha', 'Wang', 'female', '03.28.69', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Maryam', 'Gonzalez', 'kadin', '03.28.65', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Maryam', 'Gonzalez', 'female', '03.28.65', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Taichi', 'Yu ', 'erkek', '03.28.60', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Taichi', 'Yu ', 'male', '03.28.60', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Giuseppe', 'Rossi', 'erkek', '07.18.85', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Giuseppe', 'Rossi', 'male', '07.18.85', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Maria', 'Ferrari', 'kadin', '07.18.95', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Maria', 'Ferrari', 'female', '07.18.95', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Giovanni', 'Bianchi', 'erkek', '07.18.75', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Giovanni', 'Bianchi', 'male', '07.18.75', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Alessandra', 'Lombardi', 'kadin', '07.18.65', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Alessandra', 'Lombardi', 'female', '07.18.65', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Marco', 'Neri', 'erkek', '07.18.70', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Marco', 'Neri', 'male', '07.18.70', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Federica', 'Gialli', 'kadin', '07.18.61', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Federica', 'Gialli', 'female', '07.18.61', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Roberto', 'Verde', 'erkek', '07.18.62', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Roberto', 'Verde', 'male', '07.18.62', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Beat', 'Blu', 'kadin', '07.18.62', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Beat', 'Blu', 'female', '07.18.62', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Andrea', 'Gialli', 'erkek', '07.18.78', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Andrea', 'Gialli', 'male', '07.18.78', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Isabella', 'Neri', 'kadin', '07.18.88', 'Italian', 'Italian'
+EXEC [sp_Insert Tourist] 'Isabella', 'Neri', 'female', '07.18.88', 'Italian', 'Italian'
 GO
-EXEC [sp_Insert Tourist] 'Kalle ', 'Järvinen', 'kadin', '07.18.89', 'Finnish', 'Finnish'
+EXEC [sp_Insert Tourist] 'Kalle ', 'Järvinen', 'female', '07.18.89', 'Finnish', 'Finnish'
 GO
-EXEC [sp_Insert Tourist] 'Haruka ', 'Nakamura', 'erkek', '07.18.78', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Haruka ', 'Nakamura', 'male', '07.18.78', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Jeroen ', 'van der Meer', 'erkek', '07.18.58', 'Dutch', 'Dutch'
+EXEC [sp_Insert Tourist] 'Jeroen ', 'van der Meer', 'male', '07.18.58', 'Dutch', 'Dutch'
 GO
-EXEC [sp_Insert Tourist] 'Volodymyr', 'Kovalchuk', 'erkek', '07.18.59', 'Ukranian', 'Ukranian'
+EXEC [sp_Insert Tourist] 'Volodymyr', 'Kovalchuk', 'male', '07.18.59', 'Ukranian', 'Ukranian'
 GO
-EXEC [sp_Insert Tourist] 'Atsushi ', 'Miyamoto', 'kadin', '07.18.57', 'Japanese', 'Japanese'
+EXEC [sp_Insert Tourist] 'Atsushi ', 'Miyamoto', 'female', '07.18.57', 'Japanese', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Pieter ', 'Hofstra', 'erkek', '07.18.77', 'Dutch', 'Japanese'
+EXEC [sp_Insert Tourist] 'Pieter ', 'Hofstra', 'male', '07.18.77', 'Dutch', 'Japanese'
 GO
-EXEC [sp_Insert Tourist] 'Emma ', 'Taylor', 'kadin', '07.18.87', 'English', 'English'
+EXEC [sp_Insert Tourist] 'Emma ', 'Taylor', 'female', '07.18.87', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Jan ', 'de Vries', 'erkek', '07.18.75', 'Dutch', 'Dutch'
+EXEC [sp_Insert Tourist] 'Jan ', 'de Vries', 'male', '07.18.75', 'Dutch', 'Dutch'
 GO
-EXEC [sp_Insert Tourist] 'David ', 'Brown', 'erkek', '07.18.74', 'English', 'English'
+EXEC [sp_Insert Tourist] 'David ', 'Brown', 'male', '07.18.74', 'English', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Juho ', 'Nieminen', 'erkek', '07.18.63', 'Finnish', 'Finnish'
+EXEC [sp_Insert Tourist] 'Juho ', 'Nieminen', 'male', '07.18.63', 'Finnish', 'Finnish'
 GO
-EXEC [sp_Insert Tourist] 'Tuula ', 'Tuula', 'kadin', '07.18.57', 'Finnish', 'Finnish'
+EXEC [sp_Insert Tourist] 'Tuula ', 'Tuula', 'female', '07.18.57', 'Finnish', 'Finnish'
 GO
-EXEC [sp_Insert Tourist] 'Olena ', 'Petrenko', 'kadin', '07.18.66', 'Ukranian', 'Ukranian'
+EXEC [sp_Insert Tourist] 'Olena ', 'Petrenko', 'female', '07.18.66', 'Ukranian', 'Ukranian'
 GO
-EXEC [sp_Insert Tourist] 'Sarah ', 'Jones', 'kadin', '07.18.96', 'English:', 'English'
+EXEC [sp_Insert Tourist] 'Sarah ', 'Jones', 'female', '07.18.96', 'English:', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Alice', 'Smith', 'kadin', '01.01.2000', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Alice', 'Smith', 'female', '01.01.2000', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Bob', 'Johnson', 'erkek', '02.15.1998', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Bob', 'Johnson', 'male', '02.15.1998', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Charlie', 'Williams', 'kadin', '03.31.1999', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Charlie', 'Williams', 'female', '03.31.1999', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Dave', 'Jones', 'erkek', '04.01.1997', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Dave', 'Jones', 'male', '04.01.1997', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Eve', 'Brown', 'kadin', '05.21.1999', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Eve', 'Brown', 'female', '05.21.1999', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Frank', 'Davis', 'erkek', '06.05.1998', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Frank', 'Davis', 'male', '06.05.1998', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Grace', 'Miller', 'kadin', '07.12.1997', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Grace', 'Miller', 'female', '07.12.1997', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Harry', 'Wilson', 'erkek', '08.31.1999', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Harry', 'Wilson', 'male', '08.31.1999', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Isabel', 'Moore', 'kadin', '09.25.1998', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Isabel', 'Moore', 'female', '09.25.1998', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Jack', 'Taylor', 'erkek', '10.01.1997', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Jack', 'Taylor', 'male', '10.01.1997', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Kyle', 'Anderson', 'erkek', '11.03.1999', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Kyle', 'Anderson', 'male', '11.03.1999', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Lucy', 'Thomas', 'erkek', '12.12.1998', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Lucy', 'Thomas', 'male', '12.12.1998', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Mike', 'Jackson', 'erkek', '01.06.1997', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Mike', 'Jackson', 'male', '01.06.1997', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Nate', 'White', 'erkek', '02.15.1999', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Nate', 'White', 'male', '02.15.1999', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Olivia', 'Harris', 'kadin', '03.22.1998', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Olivia', 'Harris', 'female', '03.22.1998', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Paul', 'Martin', 'erkek', '04.01.1997', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Paul', 'Martin', 'male', '04.01.1997', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Quinn', 'Thompson', 'kadin', '05.19.1999', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Quinn', 'Thompson', 'female', '05.19.1999', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Ryan', 'Garcia', 'erkek', '06.03.1998', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Ryan', 'Garcia', 'male', '06.03.1998', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Sarah', 'Martinez', 'kadin', '07.10.1997', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Sarah', 'Martinez', 'female', '07.10.1997', 'Dutch', 'English'
 GO
-EXEC [sp_Insert Tourist] 'Tim', 'Robinson', 'erkek', '08.31.1999', 'Finnish', 'Greek'
+EXEC [sp_Insert Tourist] 'Tim', 'Robinson', 'male', '08.31.1999', 'Finnish', 'Greek'
 GO
-EXEC [sp_Insert Tourist] 'Uma', 'Clark', 'kadin', '09.24.1998', 'Japanese', 'Ukrainian'
+EXEC [sp_Insert Tourist] 'Uma', 'Clark', 'female', '09.24.1998', 'Japanese', 'Ukrainian'
 GO
-EXEC [sp_Insert Tourist] 'Victor', 'Rodriguez', 'erkek',  '07.18.66', 'Dutch', 'English'
+EXEC [sp_Insert Tourist] 'Victor', 'Rodriguez', 'male',  '07.18.66', 'Dutch', 'English'
 
 
 --=================================================================================================================
--- TurSatisi
+-- Tour Sale (DUMMY DATA)  !!!  USE DummyDataTesting.sql [sp_Insert Sale & Invoice_Main]  !!!
 -- x: TouristID, y: TourID, z: TourDates, t: Invoice Date
 -- Guide allocation considring tourist nationality
 UPDATE Tourist SET NewTourist = 1

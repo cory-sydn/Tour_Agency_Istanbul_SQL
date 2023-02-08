@@ -1,6 +1,6 @@
 ﻿----Add Guide
 GO
-CREATE PROC sp_GuideEkle
+CREATE PROC sp_InsertGuide
 (
 	@firstName AS NVARCHAR(20),
     @lastName AS NVARCHAR(40),
@@ -9,13 +9,18 @@ CREATE PROC sp_GuideEkle
 )
 AS
 BEGIN
+	DECLARE @guideFirstName NVARCHAR(20) = LTRIM(RTRIM(@firstName))
+    DECLARE @guideLastName NVARCHAR(40) = LTRIM(RTRIM(@lastName))
+	DECLARE @guideGender NVARCHAR(40) = LTRIM(RTRIM(@Gender))
+
     INSERT INTO Guide(GuideName, GuideSurname, Gender, Phone)
-    VALUES(@firstName, @lastName, @Gender, @Phone)
+    VALUES(@guideFirstName, @guideLastName, @guideGender, @Phone)
 
 END
 GO
+
 -- Add Guide Languages
--- GuideID ve LanguageName composite primary key
+-- GuideID and LanguageName together form composite primary key
 GO
 CREATE PROC [sp_Insert Guide Language]
 (
@@ -25,17 +30,22 @@ CREATE PROC [sp_Insert Guide Language]
 )
 AS
 BEGIN
+	DECLARE @guideFirstName NVARCHAR(20) = LTRIM(RTRIM(@firstName))
+    DECLARE @guideLastName NVARCHAR(40) = LTRIM(RTRIM(@lastName))
+    DECLARE @guideLang NVARCHAR(20) = LTRIM(RTRIM(@lang))
+
 	DECLARE @id AS INT
+
 	SELECT @id = GuideID
 	FROM Guide
-	WHERE GuideName = @firstName AND GuideSurname = @lastName
+	WHERE GuideName = @guideFirstName AND GuideSurname = @guideLastName
 
     INSERT INTO GuideLanguage(LanguageName, GuideID)
-    VALUES(@lang, @id)
+    VALUES(@guideLang, @id)
 
 END
 GO
---Tam Guide adi getir
+--Get full name
 GO
 DROP FUNCTION IF EXISTS fn_getFullName
 GO
@@ -65,10 +75,10 @@ DROP VIEW IF EXISTS [vw_Guides & Languages]
 GO
 CREATE VIEW [vw_Guides & Languages]
 AS
-SELECT dbo.fn_getFullName(r.GuideName, r.GuideSurname) AS GuideFullName,
+SELECT dbo.fn_getFullName(g.GuideName, g.GuideSurname) AS GuideFullName,
 		y.LanguageName
 FROM Guide g
-JOIN GuideLanguage y ON y.GuideID = r.GuideID
+JOIN GuideLanguage y ON y.GuideID = g.GuideID
 
 -- Guide languages with guides organized
 GO
@@ -92,8 +102,10 @@ FROM [cte_Guide Languages Single Row] cte
 GROUP BY GuideFullName
 
 
---SELECT *
---FROM [vw_Guides & Languages]
+-- SELECT *
+-- FROM [vw_Guides & Languages]
+
+--SELECT * FROM [vw_Guide Languages Single Row]
 
 -------------------- Tourist  ---------------------------------------------
 
@@ -172,6 +184,8 @@ BEGIN
 		SELECT *
 		FROM Tourist
 		WHERE TouristName = @TouristName AND TouristSurname = @TouristSurname AND @TouristBirthDate = BirthDate
+
+		PRINT 'Registired Tourist Found'
 	END
 	ELSE
 	BEGIN
@@ -180,7 +194,7 @@ BEGIN
 	END
 END
 
--- Touristleri Yaslidan Gence sirala
+-- Order tourist by age, old to youg [vw_Tourists Ordered Old to Young]
 GO
 DROP VIEW IF EXISTS [vw_Tourists Ordered Old to Young]
 GO
@@ -193,8 +207,8 @@ ORDER BY DATEDIFF(YEAR, BirthDate, GETDATE()) DESC
 
 
 -- Define Tour.
---1) Firstlty, Area names and prices should have inserted.
---2) After name tours and allocate min 1 area max 3 area.
+--1) Firsty, Area names and prices should have been defined.
+--2) And later, name tours and allocate min 1 area max 3 area to each tour.
 
 -- insert Tour Area, update Tour Prices
 
@@ -252,25 +266,34 @@ CREATE PROC [sp_Name Tour & Enter Area]
 )
 AS
 BEGIN
+	DECLARE @trimmedName NVARCHAR(150) = LTRIM(RTRIM(@tourName))
+    DECLARE @trimmedFirstArea NVARCHAR(40) = LTRIM(RTRIM(@firstArea))
+	DECLARE @trimmedSecondArea NVARCHAR(40) = LTRIM(RTRIM(@secondArea))
+	DECLARE @trimmedThirdArea NVARCHAR(40) = LTRIM(RTRIM(@thirdArea))
+
+
 	DECLARE @TourID AS INT
 	DECLARE @areaID AS INT
 
-	INSERT INTO Tour(TourName)	VALUES(@tourName)
+	INSERT INTO Tour(TourName)	VALUES(@trimmedName)
 
-	SELECT @TourID = TourID FROM Tour WHERE TourName = @tourName
+	SELECT @TourID = SCOPE_IDENTITY()
 
-	SELECT @areaID = AreaID FROM Area WHERE AreaName = @firstArea
+	SELECT @areaID = AreaID FROM Area WHERE AreaName = @trimmedFirstArea
 
 	EXEC [sp_Update Tour Price & Allocate Areas] @TourID, @areaID
 
-	IF @secondArea IS NOT NULL
+	IF @secondArea IS NOT NULL AND @thirdArea IS NOT NULL
 	BEGIN
-		SELECT @areaID = AreaID FROM Area WHERE AreaName = @secondArea
+		SELECT @areaID = AreaID FROM Area WHERE AreaName = @trimmedSecondArea
+		EXEC [sp_Update Tour Price & Allocate Areas] @TourID, @areaID
+
+		SELECT @areaID = AreaID FROM Area WHERE AreaName = @trimmedThirdArea
 		EXEC [sp_Update Tour Price & Allocate Areas] @TourID, @areaID
 	END
-	ELSE IF @thirdArea IS NOT NULL
+	ELSE IF @secondArea IS NOT NULL
 	BEGIN
-		SELECT @areaID = AreaID FROM Area WHERE AreaName = @thirdArea
+		SELECT @areaID = AreaID FROM Area WHERE AreaName = @trimmedSecondArea
 		EXEC [sp_Update Tour Price & Allocate Areas] @TourID, @areaID
 	END
 END
@@ -336,91 +359,23 @@ END
 
 
 ------------------------------[sp_Insert Sale & Invoice_Main]------------------PRODUCTION VERSION------------------
+-- Insert single tour sale details-- required sp for [sp_Insert Sale & Invoice_Main]
 GO
-DROP PROC IF EXISTS [sp_Insert Sale & Invoice_Main]
+DROP PROC IF EXISTS [sp_Insert Sale Detail]
 GO
-CREATE PROC [sp_Insert Sale & Invoice_Main]
+CREATE PROC [sp_Insert Sale Detail]
 (
-	@TouristID AS INT,
-	@GuideID AS INT,
-	@TourIDs AS VARCHAR(30),               -- comma separated IDs and thier dates or singular values. Both acceptable
-	@tourDates AS NVARCHAR(255)
+	@orderID AS INT,
+	@TourID AS INT,
+	@tourDate AS DATETIME
 )
 AS
 BEGIN
-
-	INSERT INTO TourSale VALUES(@TouristID, @GuideID)
-	--Detect cutomer if bought tour before
-	DECLARE @oldCustomer INT = (SELECT COUNT(TouristID) FROM TourSale WHERE TouristID = @TouristID)
-
-	IF @oldCustomer > 1
-	BEGIN
-		UPDATE Tourist SET NewTourist = 0 WHERE TouristID = @TouristID
-	END
-	ELSE
-	BEGIN
-		PRINT 'Ilk defa Tour alisi'
-	END
-
-	DECLARE @orderID AS INT = SCOPE_IDENTITY()
-
-	IF (@TourIDs LIKE '%,%')
-	BEGIN
-		DECLARE @TourID INT
-		DECLARE @tourDate DATETIME
-
-		DECLARE @pos INT = 1
-		DECLARE @dPos INT = 1
-		DECLARE @nextpos INT
-		DECLARE @nextDpos INT
-
-		SET @nextpos = CHARINDEX(',', @TourIDs, @pos)
-		SET @nextDpos = CHARINDEX(',', @tourDates, @dPos)
-
-		WHILE @nextpos != 0
-		BEGIN
-			SET @TourID = SUBSTRING(@TourIDs, @pos, @nextpos - @pos)
-			PRINT @TourID
-			SET @tourDate = CONVERT(DATETIME2, SUBSTRING(@tourDates, @dPos, @nextDpos - @dPos))
-			PRINT @tourDate
-
-			EXEC [sp_Insert Sale Detail] @orderID, @TourID, @tourDate
-
-			EXEC [sp_Create Invoice Item] @orderID, @TourID, @TouristID
-
-			SET @pos = @nextpos + 1
-			SET @dPos = @nextDpos + 1
-			SET @nextpos = CHARINDEX(',', @TourIDs, @pos)
-			SET @nextDpos = CHARINDEX(',', @tourDates, @dPos)
-		END
-
-		IF LEN(@TourIDs) > @pos
-		BEGIN
-			SET @TourID = SUBSTRING(@TourIDs, @pos, LEN(@TourIDs))
-			PRINT @TourID
-			SET @tourDate = CONVERT(DATETIME2, SUBSTRING(@tourDates, @dPos, LEN(@tourDates)))
-			PRINT @tourDate
-
-			EXEC [sp_Insert Sale Detail] @orderID, @TourID, @tourDate
-
-			EXEC [sp_Create Invoice Item] @orderID, @TourID, @TouristID
-		END
-	END
-	ELSE
-	BEGIN
-		-- @TourIDs is not multiple => @nextpos = 0
-		EXEC [sp_Insert Sale Detail] @orderID, @TourIDs, @tourDates
-
-		EXEC [sp_Create Invoice Item] @orderID, @TourIDs, @TouristID
-	END
+	INSERT INTO SaleDetail(SaleID, TourID, TourDate)
+	VALUES(@orderID, @TourID, @tourDate)
 END
 
-
-GO
-EXEC [sp_Insert Sale & Invoice_Main] 17, 4, '6,1', '20230126,20230130'
-
-
--------------------------------------------------------------------------------------------
+--Create Invoice Item---- required sp for [sp_Insert Sale & Invoice_Main]--------------------------------------------
 GO
 DROP PROC IF EXISTS [sp_Create Invoice Item]
 GO
@@ -484,6 +439,91 @@ BEGIN
 	VALUES( @billNo, @orderID, @TourID, @TouristID, @TouristFullName, GETDATE(), @discount, @cost * (1 - @discount))
 END
 
+-----[sp_Insert Sale & Invoice_Main]----------------------------------------------------------------------------------------
+GO
+DROP PROC IF EXISTS [sp_Insert Sale & Invoice_Main]
+GO
+CREATE PROC [sp_Insert Sale & Invoice_Main]
+(
+	@TouristID AS INT,
+	@GuideID AS INT,
+	@TourIDs AS VARCHAR(30),               -- comma separated IDs and thier dates or singular values. Both acceptable
+	@tourDates AS NVARCHAR(255)
+)
+AS
+BEGIN
+
+	INSERT INTO TourSale VALUES(@TouristID, @GuideID)
+	--Detect cutomer bought tour before
+	DECLARE @oldCustomer INT = (SELECT COUNT(TouristID) FROM TourSale WHERE TouristID = @TouristID)
+
+	IF @oldCustomer > 1
+	BEGIN
+		UPDATE Tourist SET NewTourist = 0 WHERE TouristID = @TouristID
+	END
+	ELSE
+	BEGIN
+		PRINT 'First Time Tour Purchase'
+	END
+
+	DECLARE @orderID AS INT = SCOPE_IDENTITY()
+
+	IF (@TourIDs LIKE '%,%')
+	BEGIN
+		DECLARE @TourID INT
+		DECLARE @tourDate DATETIME
+
+		DECLARE @pos INT = 1
+		DECLARE @dPos INT = 1
+		DECLARE @nextpos INT
+		DECLARE @nextDpos INT
+
+		SET @nextpos = CHARINDEX(',', @TourIDs, @pos)
+		SET @nextDpos = CHARINDEX(',', @tourDates, @dPos)
+
+		WHILE @nextpos != 0
+		BEGIN
+			SET @TourID = SUBSTRING(@TourIDs, @pos, @nextpos - @pos)
+			PRINT @TourID
+			SET @tourDate = CONVERT(DATETIME2, SUBSTRING(@tourDates, @dPos, @nextDpos - @dPos))
+			PRINT @tourDate
+
+			EXEC [sp_Insert Sale Detail] @orderID, @TourID, @tourDate
+
+			EXEC [sp_Create Invoice Item] @orderID, @TourID, @TouristID
+
+			SET @pos = @nextpos + 1
+			SET @dPos = @nextDpos + 1
+			SET @nextpos = CHARINDEX(',', @TourIDs, @pos)
+			SET @nextDpos = CHARINDEX(',', @tourDates, @dPos)
+		END
+
+		IF LEN(@TourIDs) > @pos
+		BEGIN
+			SET @TourID = SUBSTRING(@TourIDs, @pos, LEN(@TourIDs))
+			PRINT @TourID
+			SET @tourDate = CONVERT(DATETIME2, SUBSTRING(@tourDates, @dPos, LEN(@tourDates)))
+			PRINT @tourDate
+
+			EXEC [sp_Insert Sale Detail] @orderID, @TourID, @tourDate
+
+			EXEC [sp_Create Invoice Item] @orderID, @TourID, @TouristID
+		END
+	END
+	ELSE
+	BEGIN
+		-- @TourIDs is not multiple => @nextpos = 0
+		EXEC [sp_Insert Sale Detail] @orderID, @TourIDs, @tourDates
+
+		EXEC [sp_Create Invoice Item] @orderID, @TourIDs, @TouristID
+	END
+END
+
+
+-- GO
+-- EXEC [sp_Insert Sale & Invoice_Main] 17, 4, '6,1', '20230126,20230130'
+
+
 ---------------------------------------------------------------
 GO
 DROP PROC IF EXISTS [sp_Sell Tour with Name Surname]
@@ -506,14 +546,14 @@ BEGIN
 END
 
 
-EXEC [sp_Sell Tour with Name Surname] 'Geoffrey', 'Knowles', 3, '9,5', '20230126,20230130'
+--EXEC [sp_Sell Tour with Name Surname] 'Geoffrey', 'Knowles', 3, '9,5', '20230126,20230130'
 
 
-SELECT Name
-FROM sys.procedures
-WHERE OBJECT_DEFINITION(OBJECT_ID) LIKE '%SaleDetail%'
+-- SELECT Name
+-- FROM sys.procedures
+-- WHERE OBJECT_DEFINITION(OBJECT_ID) LIKE '%SaleDetail%'
 
-EXEC sp_help SaleDetail
+-- EXEC sp_help SaleDetail
 
 
 -- View table to assist salesperson choosing a guide suitable for the Tourists' Nationality information

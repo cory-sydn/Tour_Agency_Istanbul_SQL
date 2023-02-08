@@ -1,15 +1,18 @@
 /* Create database */
+USE master
+DROP DATABASE [Istanbul Tour Agency]
+
 CREATE DATABASE [Istanbul Tour Agency];
 GO
 
-USE TourCompany;
+USE [Istanbul Tour Agency];
 GO
 
 CREATE TABLE Guide(
     GuideID INT IDENTITY(1,1) PRIMARY KEY,
     GuideName NVARCHAR(20) NULL,
     GuideSurname NVARCHAR(40) NULL,
-    Gender NVARCHAR(5),
+    Gender NVARCHAR(10),
     Phone NVARCHAR(15),
 )
 
@@ -102,34 +105,34 @@ PRIMARY KEY (LanguageName, GuideID)
 
 -------------------------- TEST   ----------------------------------
 
-CREATE TABLE TestTourSale(
-    SaleID INT IDENTITY(1,1) PRIMARY KEY,
-    TouristID INT NOT NULL,
-    GuideID INT,
-    CONSTRAINT [FK_TestTourSale_Tourist] FOREIGN KEY ([TouristID]) REFERENCES [dbo].[Tourist] ([TouristID]),
-    CONSTRAINT [FK_TestTourSale_Guide] FOREIGN KEY ([GuideID]) REFERENCES [dbo].[Guide] ([GuideID])
-)
+-- CREATE TABLE TestTourSale(
+--     SaleID INT IDENTITY(1,1) PRIMARY KEY,
+--     TouristID INT NOT NULL,
+--     GuideID INT,
+--     CONSTRAINT [FK_TestTourSale_Tourist] FOREIGN KEY ([TouristID]) REFERENCES [dbo].[Tourist] ([TouristID]),
+--     CONSTRAINT [FK_TestTourSale_Guide] FOREIGN KEY ([GuideID]) REFERENCES [dbo].[Guide] ([GuideID])
+-- )
 
 
-CREATE TABLE TestSaleDetail(
-	SaleID INT NOT NULL,
-    TourID INT NOT NULL,
-	TourDate DATETIME,
-    CONSTRAINT [FK_TestSaleDetail_TestTourSale] FOREIGN KEY ([SaleID]) REFERENCES [dbo].[TestTourSale] ([SaleID]),
-    CONSTRAINT [FK_TestSaleDetail_Tur] FOREIGN KEY ([TourID]) REFERENCES [dbo].[Tour] ([TourID]),
-	CONSTRAINT [CPK_TestSaleDetail] PRIMARY KEY (SaleID, TourID)
-)
+-- CREATE TABLE TestSaleDetail(
+-- 	SaleID INT NOT NULL,
+--     TourID INT NOT NULL,
+-- 	TourDate DATETIME,
+--     CONSTRAINT [FK_TestSaleDetail_TestTourSale] FOREIGN KEY ([SaleID]) REFERENCES [dbo].[TestTourSale] ([SaleID]),
+--     CONSTRAINT [FK_TestSaleDetail_Tur] FOREIGN KEY ([TourID]) REFERENCES [dbo].[Tour] ([TourID]),
+-- 	CONSTRAINT [CPK_TestSaleDetail] PRIMARY KEY (SaleID, TourID)
+-- )
 
-CREATE TABLE TestInvoice(
-    InvoiceNo NVARCHAR(14) NOT NULL,
-	SaleID INT NOT NULL,
-    TourID INT,
-    TouristID INT,
-	TouristFullName NVARCHAR(60),
-    InvoiceDate DATETIME NULL,
-    Discount DECIMAL(18,2) DEFAULT (0),
-    TotalPrice DECIMAL(18,2) NULL,
-    CONSTRAINT [FK_TestInvoice_Tur] FOREIGN KEY ([TourID]) REFERENCES [dbo].[Tour] ([TourID]),
-    CONSTRAINT [FK_TestInvoice_Tourist] FOREIGN KEY ([TouristID]) REFERENCES [dbo].[Tourist] ([TouristID]),
-    CONSTRAINT [FK_TestInvoice_TestTourSale] FOREIGN KEY ([SaleID]) REFERENCES [dbo].[TestTourSale] ([SaleID])
-)
+-- CREATE TABLE TestInvoice(
+--     InvoiceNo NVARCHAR(14) NOT NULL,
+-- 	SaleID INT NOT NULL,
+--     TourID INT,
+--     TouristID INT,
+-- 	TouristFullName NVARCHAR(60),
+--     InvoiceDate DATETIME NULL,
+--     Discount DECIMAL(18,2) DEFAULT (0),
+--     TotalPrice DECIMAL(18,2) NULL,
+--     CONSTRAINT [FK_TestInvoice_Tur] FOREIGN KEY ([TourID]) REFERENCES [dbo].[Tour] ([TourID]),
+--     CONSTRAINT [FK_TestInvoice_Tourist] FOREIGN KEY ([TouristID]) REFERENCES [dbo].[Tourist] ([TouristID]),
+--     CONSTRAINT [FK_TestInvoice_TestTourSale] FOREIGN KEY ([SaleID]) REFERENCES [dbo].[TestTourSale] ([SaleID])
+-- )
