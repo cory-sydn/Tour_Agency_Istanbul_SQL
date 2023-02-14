@@ -158,12 +158,12 @@ ORDER BY cte.TourDate DESC
 
 
 
--- Company Total Revanue
+-- Company Total Revenue
 SELECT SUM(TotalPrice)
 FROM Invoice
 
--- Company Total Revanue year by year
-SELECT YEAR(InvoiceDate) AS Yil,
-	   SUM(TotalPrice) AS Gelir
+-- Company Total Revenue year by year
+SELECT YEAR(InvoiceDate) AS Year,
+	   SUM(TotalPrice) AS Revenue
 FROM Invoice
 GROUP BY YEAR(InvoiceDate)

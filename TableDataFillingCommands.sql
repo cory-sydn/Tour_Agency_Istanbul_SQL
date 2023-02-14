@@ -51,6 +51,7 @@ VALUES('Ayasofya', '40'),
 
 --=================================================================================================================
 -- Define Tour name and tour areas
+-- Parameters: TourName, Area Name(s)
 GO
 EXEC [sp_Name Tour & Enter Area] 'Ayasofya ve Yerebatan Sarnici', 'Ayasofya', 'Yerebatan Sarnici'
 GO
@@ -81,6 +82,7 @@ EXEC [sp_Name Tour & Enter Area] 'Miniaturk ve Kiz Kulesi', 'Miniaturk', 'Kiz Ku
 
 --=================================================================================================================
 -- Tourist
+-- Parameters: TouristName, TouristSurname, Gender, BirthDate, Nationality, ComesFrom
 GO
 EXEC [sp_Insert Tourist] 'Levi', 'Acevedo', 'female', '06.11.91', 'Japanese', 'Italy'
 GO
@@ -248,7 +250,8 @@ EXEC [sp_Insert Tourist] 'Victor', 'Rodriguez', 'male',  '07.18.66', 'Dutch', 'E
 --=================================================================================================================
 -- Tour Sale (DUMMY DATA)  !!!  USE DummyDataTesting.sql [sp_Insert Sale & Invoice_Main]  !!!
 -- x: TouristID, y: TourID, z: TourDates, t: Invoice Date
--- Guide allocation considring tourist nationality
+-- Automatically allocating guides, considering tourist nationality.
+-- Parameters: TouristID, TourIDs, TourDates, Invoice Date(for creating dummy invoice data)
 UPDATE Tourist SET NewTourist = 1
 GO
 EXEC [sp_Insert Sale & Invoice_Main] 1, '3,1', '20190701,20190704', '20190701'
